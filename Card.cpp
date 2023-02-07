@@ -273,11 +273,11 @@ Suit Suit_next(Suit suit){
 bool Card_less(const Card &a, const Card &b, Suit trump){
   
   // Right bower above all
-  if (b.is_right_bower(trump)){
+  if (b.is_right_bower(trump) && !a.is_right_bower(trump)){
     return true;
     
   // Right bower other side
-  } else if (a.is_right_bower(trump)){
+  } else if (a.is_right_bower(trump) && !b.is_right_bower(trump)){
     return false;
 
   // Left bower next in line
@@ -306,9 +306,9 @@ bool Card_less(const Card &a, const Card &b, Suit trump){
 bool Card_less(const Card &a, const Card &b, const Card &led_card, Suit trump){
   
   // Same deal here except added led_card tests
-  if (b.is_right_bower(trump)){
+  if (b.is_right_bower(trump) && !a.is_right_bower(trump)){
     return true;
-  } else if (a.is_right_bower(trump)){
+  } else if (a.is_right_bower(trump) && !b.is_right_bower(trump)){
     return false;
   } else if (b.is_left_bower(trump) && !a.is_right_bower(trump)){
     return true;

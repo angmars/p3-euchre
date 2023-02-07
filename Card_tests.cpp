@@ -7,7 +7,7 @@
 using namespace std;
 
 
-TEST(test_card_Ace_Heart) {
+TEST(test_card_ace_heart) {
 
     // Testing get rank and suit with Card(rank,suit)
     Card c = Card(ACE, HEARTS);
@@ -114,11 +114,11 @@ TEST(test_card_is_trump){
     ASSERT_EQUAL(true, c.is_trump(CLUBS));
 }
 
-TEST(test_card_not_trump){
+TEST(test_card_is_trump_right_bower){
 
-    // Testing that the card isn't a trump
-    Card c = Card(QUEEN, HEARTS);
-    ASSERT_EQUAL(false, c.is_trump(DIAMONDS));
+    // Testing that the card is a trump despite being right bower
+    Card c = Card(JACK, CLUBS);
+    ASSERT_EQUAL(true, c.is_trump(CLUBS));
 }
 
 TEST(test_card_is_trump_left_bower){
@@ -126,6 +126,13 @@ TEST(test_card_is_trump_left_bower){
     // Testing that the card is a trump despite being left bower
     Card c = Card(JACK, SPADES);
     ASSERT_EQUAL(true, c.is_trump(CLUBS));
+}
+
+TEST(test_card_not_trump){
+
+    // Testing that the card isn't a trump
+    Card c = Card(QUEEN, HEARTS);
+    ASSERT_EQUAL(false, c.is_trump(DIAMONDS));
 }
 
 TEST(test_card_suit_next1){
@@ -155,6 +162,14 @@ TEST(test_card_right_bower_v_left_bower){
     Card a = Card(JACK, HEARTS);
     Card b = Card(JACK, DIAMONDS);
     ASSERT_EQUAL(false, Card_less(a, b, HEARTS));
+}
+
+TEST(test_card_right_bower_v_right_bower){
+
+    // Testing the right bower against the right bower
+    Card a = Card(JACK, SPADES);
+    Card b = Card(JACK, SPADES);
+    ASSERT_EQUAL(false, Card_less(a, b, SPADES));
 }
 
 TEST(test_card_trump_v_left_bower){
@@ -187,6 +202,24 @@ TEST(test_card_trump_v_basic){
     Card a = Card(ACE, SPADES);
     Card b = Card(ACE, CLUBS);
     ASSERT_EQUAL(false, Card_less(a, b,  SPADES));
+}
+
+TEST(test_card_trump_v_trump_true){
+    Card a = Card(NINE, DIAMONDS);
+    Card b = Card(ACE, DIAMONDS);
+    ASSERT_EQUAL(true, Card_less(a, b, DIAMONDS));
+}
+
+TEST(test_card_trump_v_trump_false1){
+    Card a = Card(NINE, DIAMONDS);
+    Card b = Card(TWO, DIAMONDS);
+    ASSERT_EQUAL(false, Card_less(a, b, DIAMONDS));
+}
+
+TEST(test_card_trump_v_trump_false2){
+    Card a = Card(TEN, DIAMONDS);
+    Card b = Card(TEN, DIAMONDS);
+    ASSERT_EQUAL(false, Card_less(a, b, DIAMONDS));
 }
 
 TEST(test_card_basic_v_basic_true){
@@ -229,11 +262,18 @@ TEST(test_card_left_bower_v_right_bower_led){
     ASSERT_EQUAL(true, Card_less(a, b, led, HEARTS));
 }
 
-TEST(test_card_right_bower_v_right_bower_led){
+TEST(test_card_right_bower_v_left_bower_led){
     Card a = Card(JACK, HEARTS);
     Card b = Card(JACK, DIAMONDS);
     Card led = Card(TEN, DIAMONDS);
     ASSERT_EQUAL(false, Card_less(a, b, led, HEARTS));
+}
+
+TEST(test_card_right_bower_v_right_bower_led){
+    Card a = Card(JACK, SPADES);
+    Card b = Card(JACK, SPADES);
+    Card led = Card(JACK, CLUBS);
+    ASSERT_EQUAL(false, Card_less(a, b, led, SPADES));
 }
 
 TEST(test_card_trump_v_left_bower_led){
@@ -250,6 +290,27 @@ TEST(test_card_left_bower_v_trump_led){
     ASSERT_EQUAL(false, Card_less(a, b, led, SPADES));
 }
 
+TEST(test_card_trump_v_trump_true_led){
+    Card a = Card(NINE, DIAMONDS);
+    Card b = Card(ACE, DIAMONDS);
+    Card led = Card(TEN, SPADES);
+    ASSERT_EQUAL(true, Card_less(a, b, led, DIAMONDS));
+}
+
+TEST(test_card_trump_v_trump_false1_led){
+    Card a = Card(NINE, DIAMONDS);
+    Card b = Card(TWO, DIAMONDS);
+    Card led = Card(TEN, SPADES);
+    ASSERT_EQUAL(false, Card_less(a, b, led, DIAMONDS));
+}
+
+TEST(test_card_trump_v_trump_false2_led){
+    Card a = Card(TEN, DIAMONDS);
+    Card b = Card(TEN, DIAMONDS);
+    Card led = Card(NINE, SPADES);
+    ASSERT_EQUAL(false, Card_less(a, b, led, DIAMONDS));
+}
+
 TEST(test_card_led_card_v_trump_led){
     Card a = Card(NINE, HEARTS);
     Card b = Card(NINE, DIAMONDS);
@@ -261,6 +322,33 @@ TEST(test_card_trump_v_led_card_led){
     Card a = Card(ACE, SPADES);
     Card b = Card(ACE, CLUBS);
     Card led = Card(TEN, CLUBS);
+    ASSERT_EQUAL(false, Card_less(a, b, led, SPADES));
+}
+
+TEST(test_card_led_v_led_card_true_led){
+    
+    // Testing the led card against a led card true
+    Card a = Card(TWO, DIAMONDS);
+    Card b = Card(ACE, DIAMONDS);
+    Card led = Card(TEN, DIAMONDS);
+    ASSERT_EQUAL(true, Card_less(a, b, led, SPADES));
+}
+
+TEST(test_card_led_v_led_card_false1_led){
+
+    // Testing a led card against a led card false 
+    Card a = Card(ACE, DIAMONDS);
+    Card b = Card(FOUR, DIAMONDS);
+    Card led = Card(TEN, DIAMONDS);
+    ASSERT_EQUAL(false, Card_less(a, b, led, SPADES));
+}
+
+TEST(test_card_led_v_led_card_false2_led){
+
+    // Testing a led card against a led card false (equal)
+    Card a = Card(TEN, DIAMONDS);
+    Card b = Card(TEN, DIAMONDS);
+    Card led = Card(JACK, DIAMONDS);
     ASSERT_EQUAL(false, Card_less(a, b, led, SPADES));
 }
 
