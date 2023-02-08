@@ -210,7 +210,10 @@ std::istream & operator>>(std::istream &is, Card &card){
 bool operator<(const Card &lhs, const Card &rhs){
 
   // less than
-  return lhs.get_rank() < rhs.get_rank();
+  if (lhs.get_rank() == rhs.get_rank()){
+    return(lhs.get_suit() < rhs.get_suit());
+  }
+  return(lhs.get_rank() < rhs.get_rank());
 }
 
 //EFFECTS Returns true if lhs is lower value than rhs or the same card as rhs.
@@ -218,7 +221,10 @@ bool operator<(const Card &lhs, const Card &rhs){
 bool operator<=(const Card &lhs, const Card &rhs){
 
   // less than or equal to
-  return lhs.get_rank() <= rhs.get_rank();
+  if (lhs.get_rank() == rhs.get_rank()){
+    return(lhs.get_suit() <= rhs.get_suit());
+  }
+  return(lhs.get_rank() <= rhs.get_rank());
 }
 
 //EFFECTS Returns true if lhs is higher value than rhs.
@@ -226,7 +232,10 @@ bool operator<=(const Card &lhs, const Card &rhs){
 bool operator>(const Card &lhs, const Card &rhs){
 
   // greater than
-  return lhs.get_rank() > rhs.get_rank();
+  if (lhs.get_rank() == rhs.get_rank()){
+    return(lhs.get_suit() > rhs.get_suit());
+  }
+  return(lhs.get_rank() > rhs.get_rank());
 }
 
 //EFFECTS Returns true if lhs is higher value than rhs or the same card as rhs.
@@ -234,7 +243,10 @@ bool operator>(const Card &lhs, const Card &rhs){
 bool operator>=(const Card &lhs, const Card &rhs){
   
   // greater than or equal to
-  return lhs.get_rank() >= rhs.get_rank();
+  if (lhs.get_rank() == rhs.get_rank()){
+    return(lhs.get_suit() >= rhs.get_suit());
+  }
+  return(lhs.get_rank() >= rhs.get_rank());
 }
 
 //EFFECTS Returns true if lhs is same card as rhs.
@@ -242,7 +254,10 @@ bool operator>=(const Card &lhs, const Card &rhs){
 bool operator==(const Card &lhs, const Card &rhs){
 
   // equal to
-  return lhs.get_rank() == rhs.get_rank();
+  if (lhs.get_rank() == rhs.get_rank()){
+    return(lhs.get_suit() == rhs.get_suit());
+  }
+  return(lhs.get_suit() == rhs.get_suit());
 }
 
 //EFFECTS Returns true if lhs is not the same card as rhs.
@@ -250,7 +265,10 @@ bool operator==(const Card &lhs, const Card &rhs){
 bool operator!=(const Card &lhs, const Card &rhs){
 
   // not equal to
-  return lhs.get_rank() != rhs.get_rank();
+  if (lhs.get_rank() == rhs.get_rank()){
+    return(lhs.get_suit() != rhs.get_suit());
+  }
+  return(lhs.get_rank() != rhs.get_rank());
 }
 
 //EFFECTS returns the next suit, which is the suit of the same color

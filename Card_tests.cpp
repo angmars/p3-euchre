@@ -3,6 +3,7 @@
 #include "Card.h"
 #include "unit_test_framework.h"
 #include <iostream>
+#include <cassert>
 
 using namespace std;
 
@@ -139,12 +140,14 @@ TEST(test_card_suit_next1){
     
     // Testing the suit next function black
     ASSERT_EQUAL(CLUBS, Suit_next(SPADES));
+    ASSERT_EQUAL(SPADES, Suit_next(CLUBS));
 }
 
 TEST(test_card_suit_next2){
     
     // Testing the suit next function red
     ASSERT_EQUAL(DIAMONDS, Suit_next(HEARTS));
+    ASSERT_EQUAL(HEARTS, Suit_next(DIAMONDS));
 }
 
 // Testing Card_less without led suit
@@ -246,12 +249,12 @@ TEST(test_card_basic_v_basic_false2){
     ASSERT_EQUAL(false, Card_less(a, b, DIAMONDS));
 }
 
-TEST(test_card_basic_v_basic_false3){
+TEST(test_card_basic_v_basic_true3){
 
     // Testing that they are equal but also have bower ranks
     Card a = Card(JACK, SPADES);
     Card b = Card(JACK, CLUBS);
-    ASSERT_EQUAL(false, Card_less(a, b, HEARTS));
+    ASSERT_EQUAL(true, Card_less(a, b, HEARTS));
 }
 
 // Testing Card_less with led_suit <- same idea as the other Card_less tests
@@ -387,11 +390,11 @@ TEST(test_card_basic_v_basic_false2_led){
     ASSERT_EQUAL(false, Card_less(a, b, led, DIAMONDS));
 }
 
-TEST(test_card_basic_v_basic_false3_led){
+TEST(test_card_basic_v_basic_true3_led){
     Card a = Card(JACK, SPADES);
     Card b = Card(JACK, CLUBS);
     Card led = Card(TEN, DIAMONDS);
-    ASSERT_EQUAL(false, Card_less(a, b, led, HEARTS));
+    ASSERT_EQUAL(true, Card_less(a, b, led, HEARTS));
 }
 
 // Operator tests
@@ -407,10 +410,10 @@ TEST(test_card_operator_less_than_false1){
     ASSERT_EQUAL(false, a<b);
 }
 
-TEST(test_card_operator_less_than_false2){
+TEST(test_card_operator_less_than_true2){
     Card a = Card(ACE, SPADES);
     Card b = Card(ACE, HEARTS);
-    ASSERT_EQUAL(false, a<b);
+    ASSERT_EQUAL(true, a<b);
 }
 
 TEST(test_card_operator_less_than_or_equal_to_true1){
@@ -455,10 +458,10 @@ TEST(test_card_operator_greater_than_or_equal_to_true1){
     ASSERT_EQUAL(true, a>=b);
 }
 
-TEST(test_card_operator_greater_than_or_equal_to_true2){
+TEST(test_card_operator_greater_than_or_equal_to_false2){
     Card a = Card(TEN, SPADES);
     Card b = Card(TEN, HEARTS);
-    ASSERT_EQUAL(true, a>=b);
+    ASSERT_EQUAL(false, a>=b);
 }
 
 TEST(test_card_operator_greater_than_or_equal_to_false){
@@ -467,13 +470,13 @@ TEST(test_card_operator_greater_than_or_equal_to_false){
     ASSERT_EQUAL(false, a>=b);
 }
 
-TEST(test_card_operator_equal_to_true){
+TEST(test_card_operator_equal_to_false){
     Card a = Card(ACE, SPADES);
     Card b = Card(ACE, HEARTS);
-    ASSERT_EQUAL(true, a==b);
+    ASSERT_EQUAL(false, a==b);
 }
 
-TEST(test_card_operator_equal_to_false){
+TEST(test_card_operator_equal_to_false2){
     Card a = Card(ACE, SPADES);
     Card b = Card(TWO, HEARTS);
     ASSERT_EQUAL(false, a==b);
@@ -488,7 +491,7 @@ TEST(test_card_operator_not_equal_to_true){
  TEST(test_card_operator_not_equal_to_false){
     Card a = Card(THREE, SPADES);
     Card b = Card(THREE, HEARTS);
-    ASSERT_EQUAL(false, a!=b);
+    ASSERT_EQUAL(true, a!=b);
 }
 // Add more test cases here
 
