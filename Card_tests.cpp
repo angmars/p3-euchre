@@ -524,7 +524,7 @@ TEST(test_card_operator_greater_than_or_equal_to_true2){
 TEST(test_card_operator_equal_to_true){
     Card a = Card(FIVE, HEARTS);
     Card b = Card(FIVE, HEARTS);
-    ASSERT_FALSE(a==b);
+    ASSERT_TRUE(a==b);
 }
 
 TEST(test_card_operator_equal_to_false1){
