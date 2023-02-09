@@ -44,8 +44,9 @@ std::ostream & operator<<(std::ostream &os, Rank rank) {
 //EFFECTS Reads a Rank from a stream, for example "Two" -> TWO
 std::istream & operator>>(std::istream &is, Rank &rank) {
   string str;
-  is >> str;
-  rank = string_to_rank(str);
+  if(is >> str) {
+    rank = string_to_rank(str);
+  }
   return is;
 }
 
@@ -79,8 +80,9 @@ std::ostream & operator<<(std::ostream &os, Suit suit) {
 //EFFECTS Reads a Suit from a stream, for example "Spades" -> SPADES
 std::istream & operator>>(std::istream &is, Suit &suit) {
   string str;
-  is >> str;
-  suit = string_to_suit(str);
+  if (is >> str) {
+    suit = string_to_suit(str);
+  }
   return is;
 }
 
