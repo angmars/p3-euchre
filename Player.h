@@ -59,8 +59,17 @@ class Player {
 //use "return new Simple(name)" or "return new Human(name)"
 //Don't forget to call "delete" on each Player* after the game is over
 Player * Player_factory(const std::string &name, const std::string &strategy);
-
+  
+  if (strategy == "Simple") {
+    // The "new" keyword dynamically allocates an object.
+    return new SimplePlayer(name);
+  }
+  else if(strategy == "Human"){
+    return new HumanPlayer(name);
+  }
+  assert(false);
+  return nullptr;
 //EFFECTS: Prints player's name to os
-std::ostream & operator<<(std::ostream &os, const Player &p);
-
+std::ostream & operator<<(std::ostream &os, const Player &p);//HOw to do this??
+os << p
 #endif

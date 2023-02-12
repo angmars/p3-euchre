@@ -4,14 +4,6 @@
 #include "Pack.h"
 
 using namespace std;
-
-
-
-
-
-
-
-
 //EFFECTS returns player's name
 virtual const std::string & get_name() const = 0;
 
@@ -47,13 +39,3 @@ static const int MAX_HAND_SIZE = 5;
 
 // Needed to avoid some compiler errors
 virtual ~Player() {}
-
-
-//EFFECTS: Returns a pointer to a player with the given name and strategy
-//To create an object that won't go out of scope when the function returns,
-//use "return new Simple(name)" or "return new Human(name)"
-//Don't forget to call "delete" on each Player* after the game is over
-Player * Player_factory(const std::string &name, const std::string &strategy);
-
-//EFFECTS: Prints player's name to os
-std::ostream & operator<<(std::ostream &os, const Player &p);
