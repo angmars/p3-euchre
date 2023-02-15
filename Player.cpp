@@ -1,6 +1,7 @@
 // Project UID 1d9f47bfc76643019cfbf037641defe1
 
 #include <iostream>
+#include <vector>
 #include "Pack.h"
 #include "Card.h"
 #include "Player.h"
@@ -27,8 +28,166 @@ std::ostream & operator<<(std::ostream &os, const Player &p){
 class SimplePlayer : public Player {
     private:
     vector<Card> hand;
+    string player_name;
+  public:
+
+  SimplePlayer(string name){
+    player_name = name;
+  }
+  //EFFECTS returns player's name
+  const std::string & get_name() const{
+      string name;
+      cin >> name;
+      return name;
+  }
+
+  //REQUIRES player has less than MAX_HAND_SIZE cards
+  //EFFECTS  adds Card c to Player's hand
+  void add_card(const Card &c){
+      hand.push_back(c);
+  }
+
+  //REQUIRES round is 1 or 2
+  //MODIFIES order_up_suit
+  //EFFECTS If Player wishes to order up a trump suit then return true and
+  //  change order_up_suit to desired suit.  If Player wishes to pass, then do
+  //  not modify order_up_suit and return false.
+  bool make_trump(const Card &upcard, bool is_dealer,
+                          int round, Suit &order_up_suit) const{
+      
+    assert(round == 1 || round == 2);
+
+    if (round == 1) {
+      int counter1 = 0;
+      for (int i = 0; i < hand.size(); i++){ 
+        if ((hand[i].is_face_or_ace() && hand[i].is_trump(upcard.get_suit())) || 
+            hand[i].is_left_bower(upcard.get_suit()) || 
+            hand[i].is_right_bower(upcard.get_suit())){
+          counter1 ++;
+        }
+      }
+      if (counter1 >= 2){
+        return true;
+        order_up_suit = upcard.get_suit();
+      } else {
+        return false;
+      }  
+    } else if (round == 2){
+      int counter2 = 0;
+      for (int j = 0; j < hand.size(); j++){
+        if ((hand[j].is_face_or_ace() && hand[j].is_trump(Suit_next(upcard.get_suit()))) || 
+            hand[j].is_left_bower(Suit_next(upcard.get_suit())) || 
+            hand[j].is_right_bower(Suit_next(upcard.get_suit()))){
+          counter2 ++;
+        }
+      }
+    if (counter2 >= 1 || is_dealer) {
+      return true;
+      order_up_suit = Suit_next(upcard.get_suit());
+    } else {
+      return false;
+    }
+  }
+  return false;
+}
+
+  //REQUIRES Player has at least one card
+  //EFFECTS  Player adds one card to hand and removes one card from hand.
+  void add_and_discard(const Card &upcard){
+
+    assert(hand.size() >= 1);
+
+    int index = 0;
+    Card discard = Card(JACK, upcard.get_suit());
+    for (int i = 0; i < hand.size(); i++){
+      if (Card_less(discard, hand[i], upcard.get_suit())){
+        discard = hand[i];
+        index = i;
+      }
+    }
+    hand[index] = upcard;
+  }
+
+  //REQUIRES Player has at least one card
+  //EFFECTS  Leads one Card from Player's hand according to their strategy
+  //  "Lead" means to play the first Card in a trick.  The card
+  //  is removed the player's hand.
+  Card lead_card(Suit trump) {
+    assert(hand.size() >= 1);
+
+    Card highbasic = Card();
+    Card hightrump = Card();
+    int indexbasic = 0;
+    int indextrump = 0;
+    int trumpcount = 0;
+
+    for (int i = 0; i < hand.size(); i++){
+      if (!hand[i].is_trump(trump)){
+        if (Card_less(highbasic, hand[i], trump)){
+          highbasic = hand[i];
+          indexbasic = i;
+        }
+      } else {
+        trumpcount ++;
+        if (Card_less(hightrump, hand[i], trump)){
+          hightrump = hand[i];
+          indextrump = i;
+        }
+      }
+    }
+    if (trumpcount == hand.size()){
+      return hightrump;
+      hand.erase(hand.begin()+indextrump);
+    }
+    return highbasic;
+    hand.erase(hand.begin()+indexbasic);
+  }
+
+  //REQUIRES Player has at least one card
+  //EFFECTS  Plays one Card from Player's hand according to their strategy.
+  //  The card is removed from the player's hand.
+  Card play_card(const Card &led_card, Suit trump) {
+    assert(hand.size() >= 1);
+
+    Card highled = Card();
+    Card highbasic = Card(JACK, trump);
+    int indexled = 0;
+    int indexbasic = 0;
+    int ledcount = 0;
+
+    for (int i = 0; i < hand.size(); i++){
+      if (hand[i].get_suit() == led_card.get_suit()){
+        ledcount ++;
+        if (Card_less(highled, hand[i], trump)){
+          highled = hand[i];
+          indexled = i;
+        }
+      } else {
+        if (Card_less(hand[i], highbasic, trump)){
+          highbasic = hand[i];
+          indexbasic = i;
+        }
+      }
+    }
+    if (ledcount++ >= 1){
+      return highled;
+      hand.erase(hand.begin()+indexled);
+    }
+    return highbasic;
+    hand.erase(hand.begin()+indexbasic);
+  }
+};
+
+class HumanPlayer : public Player {
+    private:
+    vector<Card> hand;
     int round = 1;
-    public:
+    string player_name;
+  public:
+
+  HumanPlayer(string name){
+    player_name = name;
+  }
   //EFFECTS returns player's name
   const std::string & get_name() const{
       string name;
@@ -60,16 +219,22 @@ class SimplePlayer : public Player {
 
   //REQUIRES Player has at least one card
   //EFFECTS  Player adds one card to hand and removes one card from hand.
-  void add_and_discard(const Card &upcard) = 0;
+  void add_and_discard(const Card &upcard) {
+
+  }
 
   //REQUIRES Player has at least one card
   //EFFECTS  Leads one Card from Player's hand according to their strategy
   //  "Lead" means to play the first Card in a trick.  The card
   //  is removed the player's hand.
-  Card lead_card(Suit trump) = 0;
+  Card lead_card(Suit trump) {
+
+  }
 
   //REQUIRES Player has at least one card
   //EFFECTS  Plays one Card from Player's hand according to their strategy.
   //  The card is removed from the player's hand.
-  Card play_card(const Card &led_card, Suit trump) = 0;
-}
+  Card play_card(const Card &led_card, Suit trump) {
+
+  }
+};
