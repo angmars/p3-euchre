@@ -1,10 +1,11 @@
 // Project UID 1d9f47bfc76643019cfbf037641defe1
 
 #include <iostream>
-#include <vector>
 #include "Pack.h"
 #include "Card.h"
 #include "Player.h"
+#include <cassert>
+#include <algorithm>
 
 using namespace std;
 
@@ -35,7 +36,7 @@ class SimplePlayer : public Player {
     player_name = name;
   }
   //EFFECTS returns player's name
-  const std::string & get_name() const{
+  const std::string & get_name() const{//change this to return player_name, I dont think we need cin here
       string name;
       cin >> name;
       return name;
@@ -68,7 +69,7 @@ class SimplePlayer : public Player {
       }
       if (counter1 >= 2){
         return true;
-        order_up_suit = upcard.get_suit();
+        order_up_suit = upcard.get_suit();//make return statement last
       } else {
         return false;
       }  
@@ -83,7 +84,7 @@ class SimplePlayer : public Player {
       }
     if (counter2 >= 1 || is_dealer) {
       return true;
-      order_up_suit = Suit_next(upcard.get_suit());
+      order_up_suit = Suit_next(upcard.get_suit());//return statement last
     } else {
       return false;
     }
@@ -100,7 +101,7 @@ class SimplePlayer : public Player {
     int index = 0;
     Card discard = Card(JACK, upcard.get_suit());
     for (int i = 0; i < hand.size(); i++){
-      if (Card_less(discard, hand[i], upcard.get_suit())){
+      if (Card_less(discard, hand[i], upcard.get_suit())){//I think this might need to b switched
         discard = hand[i];
         index = i;
       }
@@ -137,10 +138,10 @@ class SimplePlayer : public Player {
     }
     if (trumpcount == hand.size()){
       return hightrump;
-      hand.erase(hand.begin()+indextrump);
+      hand.erase(hand.begin()+indextrump);// need to put before return statement, maybe need tempcard
     }
     return highbasic;
-    hand.erase(hand.begin()+indexbasic);
+    hand.erase(hand.begin()+indexbasic);///same here^
   }
 
   //REQUIRES Player has at least one card
@@ -169,36 +170,40 @@ class SimplePlayer : public Player {
         }
       }
     }
-    if (ledcount++ >= 1){
+    if (ledcount++ >= 1){//why ++ here?
       return highled;
-      hand.erase(hand.begin()+indexled);
+      hand.erase(hand.begin()+indexled);//return statement
     }
     return highbasic;
-    hand.erase(hand.begin()+indexbasic);
+    hand.erase(hand.begin()+indexbasic);//same here^
   }
 };
 
 class HumanPlayer : public Player {
     private:
     vector<Card> hand;
-    int round = 1;
     string player_name;
   public:
-
   HumanPlayer(string name){
     player_name = name;
   }
+  //Prints hand
+  void print_hand() const {
+  for (size_t i=0; i < hand.size(); ++i)
+    cout << "Human player " << player_name << "'s hand: "
+         << "[" << i << "] " << hand[i] << "\n";
+}
   //EFFECTS returns player's name
   const std::string & get_name() const{
-      string name;
-      cin >> name;
-      return name;
+      return player_name;
   }
 
   //REQUIRES player has less than MAX_HAND_SIZE cards
   //EFFECTS  adds Card c to Player's hand
   void add_card(const Card &c){
+    assert(hand.size() < MAX_HAND_SIZE);
       hand.push_back(c);
+      sort(hand.begin(), hand.end());
   }
 
   //REQUIRES round is 1 or 2
@@ -207,34 +212,55 @@ class HumanPlayer : public Player {
   //  change order_up_suit to desired suit.  If Player wishes to pass, then do
   //  not modify order_up_suit and return false.
   bool make_trump(const Card &upcard, bool is_dealer,
-                          int round, Suit &order_up_suit) const{
-      
+                          int round, Suit &order_up_suit) const{//do we need all these parameters?
+      string decision;
       assert(round == 1 || round == 2);
+      print_hand();
+      cout << "Human player " << player_name << ", please enter a suit, or \"pass\":\n";
+      cin >> decision;
 
-      if (round == 1) {
-          
-      }
-        
-  }
+    if(decision != "pass") {
+    order_up_suit = string_to_suit(decision);
+    }
+    return false;
+                          }
 
   //REQUIRES Player has at least one card
   //EFFECTS  Player adds one card to hand and removes one card from hand.
   void add_and_discard(const Card &upcard) {
-
+    assert(hand.size() >= 1);
+    int discard;
+    print_hand();
+    cout << "Discard upcard: [-1]\n";
+    cout << "Human player " << player_name << ", please select a card to discard:\n";
+    cin >> discard;
+    if(discard != -1){//if player wants to discard non-upcard
+      hand.erase(hand.begin()+discard);//discard
+      add_card(upcard);//add upcard
+    }
   }
 
   //REQUIRES Player has at least one card
   //EFFECTS  Leads one Card from Player's hand according to their strategy
   //  "Lead" means to play the first Card in a trick.  The card
   //  is removed the player's hand.
-  Card lead_card(Suit trump) {
-
+  Card lead_card(Suit trump) {//do we need this parameter?
+    assert(hand.size() >= 1);
+    print_hand();
+    int selected_card;
+    cout << "Human player " << player_name << ", please select a card to lead:\n";
+    cin >> selected_card;
+    Card tempcard = hand[selected_card];//make tempcard to return
+    hand.erase(hand.begin() + selected_card);//discard card from hand
+    return tempcard;
   }
 
   //REQUIRES Player has at least one card
   //EFFECTS  Plays one Card from Player's hand according to their strategy.
   //  The card is removed from the player's hand.
-  Card play_card(const Card &led_card, Suit trump) {
+  Card play_card(const Card &led_card, Suit trump) {//do we need both of these?
+    print_hand();
+    cout << "Human player " << player_name << ", please select a card:\n";
 
   }
 };
