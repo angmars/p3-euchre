@@ -9,22 +9,6 @@
 
 using namespace std;
 
-Player * Player_factory(const std::string &name, const std::string &strategy){
-  
-  if (strategy == "Simple") {
-    // The "new" keyword dynamically allocates an object.
-    return new SimplePlayer(name);
-  }
-  else if(strategy == "Human"){
-    return new HumanPlayer(name);
-  }
-  assert(false);
-  return nullptr;
-}
-//EFFECTS: Prints player's name to os
-std::ostream & operator<<(std::ostream &os, const Player &p){
-  os << p.get_name();
-}
 
 class SimplePlayer : public Player {
     private:
@@ -36,13 +20,14 @@ class SimplePlayer : public Player {
     player_name = name;
   }
   //EFFECTS returns player's name
-  const std::string & get_name() const{//change this to return player_name, I dont think we need cin here
+  const std::string & get_name() const{
       return player_name;
   }
 
   //REQUIRES player has less than MAX_HAND_SIZE cards
   //EFFECTS  adds Card c to Player's hand
   void add_card(const Card &c){
+      assert(hand.size() < MAX_HAND_SIZE);
       hand.push_back(c);
   }
 
@@ -66,8 +51,8 @@ class SimplePlayer : public Player {
         }
       }
       if (counter1 >= 2){
+        order_up_suit = upcard.get_suit();
         return true;
-        order_up_suit = upcard.get_suit();//make return statement last
       } else {
         return false;
       }  
@@ -81,8 +66,8 @@ class SimplePlayer : public Player {
         }
       }
     if (counter2 >= 1 || is_dealer) {
+      order_up_suit = Suit_next(upcard.get_suit());
       return true;
-      order_up_suit = Suit_next(upcard.get_suit());//return statement last
     } else {
       return false;
     }
@@ -99,7 +84,7 @@ class SimplePlayer : public Player {
     int index = 0;
     Card discard = Card(JACK, upcard.get_suit());
     for (int i = 0; i < hand.size(); i++){
-      if (Card_less(discard, hand[i], upcard.get_suit())){//I think this might need to b switched
+      if (Card_less(hand[i], discard, upcard.get_suit())){
         discard = hand[i];
         index = i;
       }
@@ -114,8 +99,8 @@ class SimplePlayer : public Player {
   Card lead_card(Suit trump) {
     assert(hand.size() >= 1);
 
-    Card highbasic = Card();
-    Card hightrump = Card();
+    Card highbasic = Card(TWO, Suit_next(trump));
+    Card hightrump = Card(TWO, trump);
     int indexbasic = 0;
     int indextrump = 0;
     int trumpcount = 0;
@@ -135,11 +120,11 @@ class SimplePlayer : public Player {
       }
     }
     if (trumpcount == hand.size()){
+      hand.erase(hand.begin()+indextrump);
       return hightrump;
-      hand.erase(hand.begin()+indextrump);// need to put before return statement, maybe need tempcard
     }
+    hand.erase(hand.begin()+indexbasic);
     return highbasic;
-    hand.erase(hand.begin()+indexbasic);///same here^
   }
 
   //REQUIRES Player has at least one card
@@ -148,32 +133,32 @@ class SimplePlayer : public Player {
   Card play_card(const Card &led_card, Suit trump) {
     assert(hand.size() >= 1);
 
-    Card highled = Card();
-    Card highbasic = Card(JACK, trump);
+    Card highled = Card(TWO, led_card.get_suit());
+    Card lowbasic = Card(JACK, trump);
     int indexled = 0;
     int indexbasic = 0;
     int ledcount = 0;
 
     for (int i = 0; i < hand.size(); i++){
-      if (hand[i].get_suit() == led_card.get_suit()){
+      if ((!(hand[i].is_left_bower(trump)) && hand[i].get_suit() == led_card.get_suit()) || (led_card.get_suit() == trump)) {
         ledcount ++;
         if (Card_less(highled, hand[i], trump)){
           highled = hand[i];
           indexled = i;
         }
       } else {
-        if (Card_less(hand[i], highbasic, trump)){
-          highbasic = hand[i];
+        if (Card_less(hand[i], lowbasic, trump)){
+          lowbasic = hand[i];
           indexbasic = i;
         }
       }
     }
-    if (ledcount++ >= 1){//why ++ here?
+    if (ledcount >= 1){
+      hand.erase(hand.begin()+indexled);
       return highled;
-      hand.erase(hand.begin()+indexled);//return statement
     }
-    return highbasic;
-    hand.erase(hand.begin()+indexbasic);//same here^
+    hand.erase(hand.begin()+indexbasic);
+    return lowbasic;
   }
 };
 
@@ -182,6 +167,7 @@ class HumanPlayer : public Player {
     vector<Card> hand;
     string player_name;
   public:
+  
   HumanPlayer(string name){
     player_name = name;
   }
@@ -237,28 +223,41 @@ class HumanPlayer : public Player {
       add_card(upcard);//add upcard
     }
   }
-
-  //REQUIRES Player has at least one card
-  //EFFECTS  Leads one Card from Player's hand according to their strategy
-  //  "Lead" means to play the first Card in a trick.  The card
-  //  is removed the player's hand.
-  Card lead_card(Suit trump) {//do we need this parameter?
-    assert(hand.size() >= 1);
-    print_hand();
-    int selected_card;
-    cout << "Human player " << player_name << ", please select a card to lead:\n";
-    cin >> selected_card;
-    Card tempcard = hand[selected_card];//make tempcard to return
-    hand.erase(hand.begin() + selected_card);//discard card from hand
-    return tempcard;
+  Card lead_card(Suit trump){
+      Card blah = Card();
+      Card played = play_card(blah, trump);
+      return played;
   }
 
   //REQUIRES Player has at least one card
   //EFFECTS  Plays one Card from Player's hand according to their strategy.
   //  The card is removed from the player's hand.
-  Card play_card(const Card &led_card, Suit trump) {//do we need both of these?
+  Card play_card(const Card &led_card, Suit trump) {
+    assert(hand.size() >= 1);
     print_hand();
+    int selected_card;
     cout << "Human player " << player_name << ", please select a card:\n";
-
+    cin >> selected_card;
+    Card tempcard = hand[selected_card];//make tempcard to return
+    hand.erase(hand.begin() + selected_card);//discard card from hand
+    return tempcard;
   }
 };
+
+Player * Player_factory(const std::string &name, const std::string &strategy){
+  
+  if (strategy == "Simple") {
+    // The "new" keyword dynamically allocates an object.
+    return new SimplePlayer(name);
+  }
+  else if(strategy == "Human"){
+    return new HumanPlayer(name);
+  }
+  assert(false);
+  return nullptr;
+}
+//EFFECTS: Prints player's name to os
+std::ostream & operator<<(std::ostream &os, const Player &p){
+  os << p.get_name();
+  return os;
+}
