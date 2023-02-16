@@ -81,15 +81,15 @@ class SimplePlayer : public Player {
           counter2 ++;
         }
       }
-    if (counter2 >= 1 || is_dealer) {
-      return true;
-      order_up_suit = Suit_next(upcard.get_suit());
-    } else {
-      return false;
+      if (counter2 >= 1 || is_dealer) {
+        return true;
+        order_up_suit = Suit_next(upcard.get_suit());
+      } else {
+        return false;
+      }
     }
+    return false;
   }
-  return false;
-}
 
   //REQUIRES Player has at least one card
   //EFFECTS  Player adds one card to hand and removes one card from hand.
