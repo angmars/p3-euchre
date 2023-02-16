@@ -37,9 +37,7 @@ class SimplePlayer : public Player {
   }
   //EFFECTS returns player's name
   const std::string & get_name() const{//change this to return player_name, I dont think we need cin here
-      string name;
-      cin >> name;
-      return name;
+      return player_name;
   }
 
   //REQUIRES player has less than MAX_HAND_SIZE cards
