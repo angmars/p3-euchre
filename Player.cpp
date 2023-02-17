@@ -1,8 +1,6 @@
 // Project UID 1d9f47bfc76643019cfbf037641defe1
 
 #include <iostream>
-#include "Pack.h"
-#include "Card.h"
 #include "Player.h"
 #include <cassert>
 #include <algorithm>
