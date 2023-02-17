@@ -140,7 +140,7 @@ class SimplePlayer : public Player {
     int ledcount = 0;
 
     for (int i = 0; i < hand.size(); i++){
-      if ((!(hand[i].is_left_bower(trump)) && hand[i].get_suit() == led_card.get_suit()) || (led_card.get_suit() == trump)) {
+      if ((hand[i].get_suit(trump) == led_card.get_suit(trump))) {
         ledcount ++;
         if (Card_less(highled, hand[i], trump)){
           highled = hand[i];

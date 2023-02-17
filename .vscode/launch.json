@@ -1,0 +1,45 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(lldb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/euchre.exe",
+            "args": [
+                // "pack.in",
+                // "noshuffle",
+                // "3",
+                // "Ivan",
+                // "Human",
+                // "Judea",
+                // "Human",
+                // "Kunle",
+                // "Human",
+                // "Liskov",
+                // "Human"
+                "pack.in",
+                "shuffle",
+                "10",
+                "Edsger",
+                "Simple",
+                "Fran",
+                "Simple",
+                "Gabriel",
+                "Simple",
+                "Herb",
+                "Simple",
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "setupCommands": [
+                {
+                    "text": "settings set target.input-path euchre_test50.in"
+                }
+            ]
+        }
+    ]
+}
