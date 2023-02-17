@@ -203,14 +203,14 @@ TEST(test_player_lead_card1){
     kaitlyn->add_card(card4);
     kaitlyn->add_card(card5);
 
-    ASSERT_EQUAL(card5, kaitlyn->lead_card(HEARTS));
+    ASSERT_EQUAL(card3, kaitlyn->lead_card(HEARTS));
 
     const Card upcard1 = Card(ACE, HEARTS);
 
-    // Gets rid of Queen of Hearts
+    // Gets rid of King of Hearts
     kaitlyn->play_card(upcard1, SPADES);
 
-    ASSERT_EQUAL(card3, kaitlyn->lead_card(HEARTS));
+    ASSERT_EQUAL(card4, kaitlyn->lead_card(HEARTS));
 
     delete kaitlyn;
 }
@@ -257,7 +257,7 @@ TEST(test_player_play_card1){
     dajias1->add_card(card5);
 
     const Card upcard1 = Card(TEN, DIAMONDS);
-    ASSERT_EQUAL(card3, dajias1->play_card(upcard1, SPADES));
+    ASSERT_EQUAL(card2, dajias1->play_card(upcard1, SPADES));
 
     const Card upcard2 = Card(NINE, SPADES);
     ASSERT_EQUAL(card5, dajias1->play_card(upcard2, SPADES));
