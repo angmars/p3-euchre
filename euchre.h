@@ -14,6 +14,10 @@ class Game{
     bool shuffling;
     Suit trump;
     Card upcard;
+    int points_team1;
+    int points_team2;
+    int order_up_team;
+    std::vector<Player*> original_player_order;
 
     public:
     
@@ -21,7 +25,14 @@ class Game{
 
     void shuffle();
     void deal();
-    void Game::make_trump(const Card upcard, Suit &trump);
-    Card play_hand(Player *player, bool is_leader, Suit trump, Card lead_card);
+    void Game::make_trump();
+    Card play_card(int index, bool is_leader, Card lead_card);
+    vector<int> Game::play_hand();
+    Player* Game::get_player(int index);
+    void Game::player_rotate();
+    void Game::play();
+    int Game::get_winner(Card card1, Card card2, Card card3, Card card4);
+    Suit Game::get_trump();
+    bool Game::is_team_1(Player* plyr);
 
 };
