@@ -159,7 +159,7 @@ bool Game::is_team_1(Player* plyr){
 }
 
 Player* Game::get_player(int index){
-    return players[index];
+    return original_player_order[index];
 }
 
 void Game::player_rotate(){
@@ -191,14 +191,48 @@ int Game::get_winner(Card card1, Card card2, Card card3, Card card4){
 
 void Game::play(){
     
+    pair <Player*, Player*> team_1; 
+    team_1.first = original_player_order[3];//initial dealer
+    team_1.second = original_player_order[1];//across from dealer
+
+    pair <Player*, Player*> team_2; 
+    team_2.first = original_player_order[0];//left of dealer
+    team_2.second = original_player_order[2];//right of dealer
+
     int hand_count = 0;
     while (points_team1 < points_to_win && points_team2 < points_to_win){
+        bool plus_two = false;
         cout << "Hand " << hand_count << endl;
         cout << (players[3])->get_name() << " deals" << endl;
         deal();
         cout << upcard << " turned up" << endl;
         make_trump();
-        play_hand();
+        vector<int> result = play_hand();
+        if (result[0] == order_up_team && result[1] == 5){
+            cout << "march!" << endl;
+            plus_two = true;
+        } else if (result[0] != order_up_team && result[1] >= 3){
+            cout << "euchred!" << endl;
+            plus_two = true;
+        }
+        if (result[0] == 1) {
+            cout << (team_1.first)->get_name() << " and " << (team_1.second)->get_name() << " win the hand" << endl;
+            if (plus_two){
+                points_team1 += 2;
+            }
+            points_team1 ++;
+        } else if (result [0] == 2) {
+            cout << (team_2.first)->get_name() << " and " << (team_2.second)->get_name() << " win the hand" << endl;
+            if (plus_two){
+                points_team2 += 2;
+            }
+            points_team2 ++;
+        }
+    }
+    if(points_team1 >= points_to_win){
+        cout << (team_1.first)->get_name() << " and " << (team_1.second)->get_name() << " win!" << endl;
+    } else if(points_team2 >= points_to_win){
+        cout << (team_2.first)->get_name() << " and " << (team_2.second)->get_name() << " win1" << endl;
     }
 }
 
@@ -240,13 +274,6 @@ int main(int argc, char *argv[]){
         delete temp_players[i];
     }
     //add playing stuff here
-    pair <Player*, Player*> team_1; 
-    team_1.first = euchre.get_player(3);//initial dealer
-    team_1.second = euchre.get_player(1);//across from dealer
-
-    pair <Player*, Player*> team_2; 
-    team_2.first = euchre.get_player(0);//left of dealer
-    team_2.second = euchre.get_player(2);//right of dealer
     
     euchre.play();
 
