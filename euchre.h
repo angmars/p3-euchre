@@ -3,6 +3,8 @@
 #include "Player.h"
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <istream>
 
 
 class Game{
@@ -18,21 +20,22 @@ class Game{
     int points_team2;
     int order_up_team;
     std::vector<Player*> original_player_order;
+    std::vector<Player*> dealer_order;
 
     public:
     
-    Game(std::vector<Player*> players_in, int pts_to_win, bool shuffle_in, istream& pack_name);
+    Game(std::vector<Player*> players_in, int pts_to_win, bool shuffle_in, std::ifstream& pack_name);
 
     void shuffle();
     void deal();
-    void Game::make_trump();
+    void make_trump();
     Card play_card(int index, bool is_leader, Card lead_card);
-    vector<int> Game::play_hand();
-    Player* Game::get_player(int index);
-    void Game::player_rotate();
-    void Game::play();
-    int Game::get_winner(Card card1, Card card2, Card card3, Card card4);
-    Suit Game::get_trump();
-    bool Game::is_team_1(Player* plyr);
+    std::vector<int> play_hand();
+    Player* get_player(int index);
+    void player_rotate();
+    void play();
+    int get_winner(Card card1, Card card2, Card card3, Card card4);
+    Suit get_trump();
+    bool is_team_1(Player* plyr);
 
 };

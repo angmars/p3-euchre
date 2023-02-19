@@ -1,14 +1,14 @@
 #include <iostream>
 #include "euchre.h"
-#include <fstream>
 #include <cassert>
 
 using namespace std;
 
-Game::Game(std::vector<Player*> players_in, int pts_to_win, bool shuffle_in, istream& pack_name){
+Game::Game(std::vector<Player*> players_in, int pts_to_win, bool shuffle_in, ifstream& pack_name){
     for(int i = 0; i < players_in.size(); ++i){//in correct order w dealer last at this point
-        players[i] == players_in[i];
-        original_player_order[i] == players_in[i];
+        players.push_back(players_in[i]);
+        original_player_order.push_back(players_in[i]);
+        dealer_order.push_back(players_in[i]);
     }
     points_to_win = pts_to_win;
     shuffling = shuffle_in;
@@ -27,36 +27,36 @@ void Game::deal(){
     }
     int playercounter = 0;//start at one to get player 
     for(int i = 0; i < 3; ++i){//first 3 cards player left of dealer
-        players[playercounter]->add_card(pack.deal_one());
+        dealer_order[playercounter]->add_card(pack.deal_one());
     }
     ++playercounter;
     for(int i = 0; i < 2; ++i){//next 2 cards player 2
-        players[playercounter]->add_card(pack.deal_one());
+        dealer_order[playercounter]->add_card(pack.deal_one());
     }
     ++playercounter;
     for(int i = 0; i < 3; ++i){//next 3 cards player 3
-        players[playercounter]->add_card(pack.deal_one());
+        dealer_order[playercounter]->add_card(pack.deal_one());
     }
     ++playercounter; 
     for(int i = 0; i < 2; ++i){//next 2 cards
-        players[playercounter]->add_card(pack.deal_one());
+        dealer_order[playercounter]->add_card(pack.deal_one());
     }
     //next round of dealing
     playercounter = 0;
     for(int i = 0; i < 2; ++i){
-        players[playercounter]->add_card(pack.deal_one());
+        dealer_order[playercounter]->add_card(pack.deal_one());
     }
     ++playercounter;
     for(int i = 0; i < 3; ++i){
-        players[playercounter]->add_card(pack.deal_one());
+        dealer_order[playercounter]->add_card(pack.deal_one());
     }
     ++playercounter;
     for(int i = 0; i < 2; ++i){
-        players[playercounter]->add_card(pack.deal_one());
+        dealer_order[playercounter]->add_card(pack.deal_one());
     }
     ++playercounter;
     for(int i = 0; i < 3; ++i){
-        players[playercounter]->add_card(pack.deal_one());
+        dealer_order[playercounter]->add_card(pack.deal_one());
     }
     upcard = pack.deal_one();
 }
@@ -66,7 +66,7 @@ void Game::make_trump(){
         for (int i = 0; i < 4; i++){
             bool isdealer = false;
             if (i == 3){
-                isdealer == true;
+                isdealer = true;
             }
             if ((players[i])->make_trump(upcard, isdealer, round, trump)){
                 players[i]->add_and_discard(upcard);
@@ -164,12 +164,12 @@ Player* Game::get_player(int index){
 
 void Game::player_rotate(){
     vector<Player*> temp_players;
-    for(int i = 1; i < players.size(); ++i){
-        temp_players.push_back(players[i]);//every other player except new dealer
+    for(int i = 1; i < dealer_order.size(); ++i){
+        temp_players.push_back(dealer_order[i]);//every other player except new dealer
     }
-    temp_players.push_back(players[1]);//add dealer to end
+    temp_players.push_back(dealer_order[1]);//add dealer to end
     for(int i = 0; i < temp_players.size(); ++i){
-        players[i] = temp_players[i];//copy temp_players into players
+        dealer_order[i] = temp_players[i];//copy temp_players into players
     }
 }
 
@@ -186,7 +186,8 @@ int Game::get_winner(Card card1, Card card2, Card card3, Card card4){
     } else if (!Card_less(card4, card2, card1, trump) && !Card_less(card4, card3, card1, trump) 
                         && !Card_less(card4, card1, card1, trump)){
         return 4;
-    }  
+    }
+    return -1;  
 }
 
 void Game::play(){
@@ -203,11 +204,12 @@ void Game::play(){
     while (points_team1 < points_to_win && points_team2 < points_to_win){
         bool plus_two = false;
         cout << "Hand " << hand_count << endl;
-        cout << (players[3])->get_name() << " deals" << endl;
+        cout << (dealer_order[3])->get_name() << " deals" << endl;
         deal();
         cout << upcard << " turned up" << endl;
         make_trump();
         vector<int> result = play_hand();
+        player_rotate();
         if (result[0] == order_up_team && result[1] == 5){
             cout << "march!" << endl;
             plus_two = true;
@@ -218,13 +220,13 @@ void Game::play(){
         if (result[0] == 1) {
             cout << (team_1.first)->get_name() << " and " << (team_1.second)->get_name() << " win the hand" << endl;
             if (plus_two){
-                points_team1 += 2;
+                points_team1 ++;
             }
             points_team1 ++;
-        } else if (result [0] == 2) {
+        } else if (result[0] == 2) {
             cout << (team_2.first)->get_name() << " and " << (team_2.second)->get_name() << " win the hand" << endl;
             if (plus_two){
-                points_team2 += 2;
+                points_team2 ++;
             }
             points_team2 ++;
         }
@@ -233,6 +235,15 @@ void Game::play(){
         cout << (team_1.first)->get_name() << " and " << (team_1.second)->get_name() << " win!" << endl;
     } else if(points_team2 >= points_to_win){
         cout << (team_2.first)->get_name() << " and " << (team_2.second)->get_name() << " win1" << endl;
+    }
+    for (size_t i = 0; i < players.size(); ++i) {//delete all players
+        delete players[i];
+    }
+    for (size_t i = 0; i < dealer_order.size(); ++i) {
+        delete dealer_order[i];
+    }
+    for (size_t i = 0; i < original_player_order.size(); ++i) {
+        delete original_player_order[i];
     }
 }
 
@@ -251,7 +262,7 @@ int main(int argc, char *argv[]){
     string shuffle = argv[2];
     bool temp_shuffle = (shuffle == "shuffle");
     int points_to_win = atoi(argv[3]);
-    if((argc != 12) && (1 <= points_to_win <= 100) && ((shuffle == "shuffle") 
+    if((argc != 12) && (1 <= points_to_win) && (points_to_win <= 100) && ((shuffle == "shuffle") 
         || (shuffle == "noshuffle")) && (is_simple_or_human(argv[5])) && (is_simple_or_human(argv[7]))
         && (is_simple_or_human(argv[9])) && (is_simple_or_human(argv[11]))){//checking for errors in cmd line args
         cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
@@ -273,10 +284,9 @@ int main(int argc, char *argv[]){
     for (size_t i = 0; i < temp_players.size(); ++i) {
         delete temp_players[i];
     }
+    
     //add playing stuff here
     
     euchre.play();
-
     
-
 }
