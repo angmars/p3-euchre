@@ -7,7 +7,7 @@
 
 class Game{
     private:
-    Pack pack = Pack();
+    Pack pack;
     std::vector<Player*> players;
     int leader_index;
     int points_to_win;
@@ -17,7 +17,7 @@ class Game{
 
     public:
     
-    Game(std::vector<Player*> players_in, int pts_to_win, bool shuffle_in);
+    Game(std::vector<Player*> players_in, int pts_to_win, bool shuffle_in, istream& pack_name);
 
     void shuffle();
     void deal();

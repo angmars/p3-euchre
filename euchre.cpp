@@ -5,12 +5,13 @@
 
 using namespace std;
 
-Game::Game(std::vector<Player*> players_in, int pts_to_win, bool shuffle_in){
+Game::Game(std::vector<Player*> players_in, int pts_to_win, bool shuffle_in, istream& pack_name){
     for(int i = 0; i < players_in.size(); ++i){
         players[i] == players_in[i];
     }
     points_to_win = pts_to_win;
     shuffling = shuffle_in;
+    pack = Pack(pack_name);
 }
 void Game::shuffle(){
     pack.shuffle();
@@ -83,10 +84,20 @@ Card Game::play_hand(Player *player, bool is_leader, Suit trump, Card lead_card)
 
 int main(int argc, char *argv[]){
     //get vector of players, make dealer last index
-    assert(argc == 12);
-    std::vector<Player*> temp_players;
-    bool temp_shuffle;
     
+    std::vector<Player*> temp_players;
+    string shuffle = argv[2];
+    bool temp_shuffle;
+    int points_to_win = atoi(argv[3]);
+    if((argc != 12) && (1 <= points_to_win <= 100) &&){//checking for errors in cmd line args
+
+    }
+    string filename = argv[1];
+    ifstream fin(filename);
+    if(!fin.is_open()){
+        cout << "Error opening " << filename << endl;
+        return -1;
+    }
     for(int i = 6; i < argc; i+=2){//read in all players, skipping dealer
         temp_players.push_back(Player_factory(argv[i], argv[i+1]));
     }
