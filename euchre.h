@@ -1,4 +1,4 @@
-#include<vector>
+#include <vector>
 #include "Pack.h"
 #include "Player.h"
 #include <iostream>
@@ -7,19 +7,21 @@
 
 class Game{
     private:
-    Pack pack();
+    Pack pack = Pack();
     std::vector<Player*> players;
+    int leader_index;
     int points_to_win;
-
+    bool shuffling;
+    Suit trump;
+    Card upcard;
 
     public:
     
-    Game(std::vector<String> player_names, int pts_to_win, );
+    Game(std::vector<Player*> players_in, int pts_to_win, bool shuffle_in);
 
-    void play();
     void shuffle();
     void deal();
-    void make_trump();
-    void play_hand();
+    void Game::make_trump(const Card upcard, Suit &trump);
+    Card play_hand(Player *player, bool is_leader, Suit trump, Card lead_card);
 
 };
