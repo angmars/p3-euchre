@@ -11,6 +11,8 @@ class Game{
     private:
     Pack pack;
     std::vector<Player*> players;
+    std::vector<Player*> original_player_order;
+    std::vector<Player*> dealer_order;
     int leader_index;
     int points_to_win;
     bool shuffling;
@@ -19,9 +21,6 @@ class Game{
     int points_team1;
     int points_team2;
     int order_up_team;
-    std::vector<Player*> original_player_order;
-    std::vector<Player*> dealer_order;
-
     public:
     
     Game(std::vector<Player*> players_in, int pts_to_win, bool shuffle_in, std::istream& pack_name);
