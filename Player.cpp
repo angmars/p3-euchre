@@ -26,7 +26,6 @@ class SimplePlayer : public Player {
   //EFFECTS  adds Card c to Player's hand
   void add_card(const Card &c){
       assert(hand.size() < MAX_HAND_SIZE);
-      cout << "got here 1";
       hand.push_back(c);
   }
 
@@ -79,7 +78,6 @@ class SimplePlayer : public Player {
   void add_and_discard(const Card &upcard){
 
     assert(hand.size() >= 1);
-
     int index = 0;
     Card discard = Card(JACK, upcard.get_suit());
     for (int i = 0; i < hand.size(); i++){
