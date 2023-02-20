@@ -26,6 +26,7 @@ class SimplePlayer : public Player {
   //EFFECTS  adds Card c to Player's hand
   void add_card(const Card &c){
       assert(hand.size() < MAX_HAND_SIZE);
+      cout << "got here 1";
       hand.push_back(c);
   }
 

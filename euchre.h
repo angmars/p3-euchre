@@ -24,7 +24,7 @@ class Game{
 
     public:
     
-    Game(std::vector<Player*> players_in, int pts_to_win, bool shuffle_in, std::ifstream& pack_name);
+    Game(std::vector<Player*> players_in, int pts_to_win, bool shuffle_in, std::istream& pack_name);
 
     void shuffle();
     void deal();

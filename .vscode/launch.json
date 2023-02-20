@@ -7,32 +7,27 @@
             "request": "launch",
             "program": "${workspaceFolder}/euchre.exe",
             "args": [
-                // "pack.in",
-                // "noshuffle",
-                // "3",
-                // "Ivan",
-                // "Human",
-                // "Judea",
-                // "Human",
-                // "Kunle",
-                // "Human",
-                // "Liskov",
-                // "Human"
                 "pack.in",
-                "shuffle",
-                "10",
-                "Edsger",
+                "noshuffle",
+                "1",
+                "Adi",
                 "Simple",
-                "Fran",
+                "Barbara",
                 "Simple",
-                "Gabriel",
+                "Chi-Chih",
                 "Simple",
-                "Herb",
-                "Simple",
+                "Dabbala",
+                "Simple"
+                
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [],
+            "environment": [
+                {
+                  "name": "ASAN_OPTIONS",
+                  "value": "abort_on_error=1:detect_leaks=0"
+                }
+              ],
             "externalConsole": false,
             "MIMode": "lldb",
             "setupCommands": [

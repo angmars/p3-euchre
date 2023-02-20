@@ -4,10 +4,10 @@
 
 using namespace std;
 
-Game::Game(std::vector<Player*> players_in, int pts_to_win, bool shuffle_in, ifstream& pack_name){
+Game::Game(std::vector<Player*> players_in, int pts_to_win, bool shuffle_in, istream& pack_name){
     for(int i = 0; i < players_in.size(); ++i){//in correct order w dealer last at this point
-        players.push_back(players_in[i]);
-        original_player_order.push_back(players_in[i]);
+        // players.push_back(players_in[i]);
+        // original_player_order.push_back(players_in[i]);
         dealer_order.push_back(players_in[i]);
     }
     points_to_win = pts_to_win;
@@ -27,37 +27,46 @@ void Game::deal(){
     }
     int playercounter = 0;//start at one to get player 
     for(int i = 0; i < 3; ++i){//first 3 cards player left of dealer
-        dealer_order[playercounter]->add_card(pack.deal_one());
+        assert(dealer_order[playercounter]!=nullptr);
+        (dealer_order[playercounter])->add_card(pack.deal_one());
     }
+    cout << "FUCKING FUCK MAN 2" << endl;
     ++playercounter;
     for(int i = 0; i < 2; ++i){//next 2 cards player 2
         dealer_order[playercounter]->add_card(pack.deal_one());
     }
+    cout << "FUCKING FUCK MAN 3" << endl;
     ++playercounter;
     for(int i = 0; i < 3; ++i){//next 3 cards player 3
         dealer_order[playercounter]->add_card(pack.deal_one());
     }
+    cout << "FUCKING FUCK MAN 4" << endl;
     ++playercounter; 
     for(int i = 0; i < 2; ++i){//next 2 cards
         dealer_order[playercounter]->add_card(pack.deal_one());
     }
+    cout << "FUCKING FUCK MAN 5" << endl;
     //next round of dealing
     playercounter = 0;
     for(int i = 0; i < 2; ++i){
         dealer_order[playercounter]->add_card(pack.deal_one());
     }
+    cout << "FUCKING FUCK MAN 6" << endl;
     ++playercounter;
     for(int i = 0; i < 3; ++i){
         dealer_order[playercounter]->add_card(pack.deal_one());
     }
+    cout << "FUCKING FUCK MAN 7" << endl;
     ++playercounter;
     for(int i = 0; i < 2; ++i){
         dealer_order[playercounter]->add_card(pack.deal_one());
     }
+    cout << "FUCKING FUCK MAN 8" << endl;
     ++playercounter;
     for(int i = 0; i < 3; ++i){
         dealer_order[playercounter]->add_card(pack.deal_one());
     }
+    cout << "FUCKING FUCK MAN 9" << endl;
     upcard = pack.deal_one();
 }
 void Game::make_trump(){
