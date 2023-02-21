@@ -31,20 +31,20 @@ class Game{
     Game(Player* one, Player* two, Player* three, Player* four, 
                 int pts_to_win, bool shuffle_in, istream& pack_name){
 
-            players.push_back(two);
-            players.push_back(three);
-            players.push_back(four);
-            players.push_back(one);
+        players.push_back(two);
+        players.push_back(three);
+        players.push_back(four);
+        players.push_back(one);
 
-            original_player_order.push_back(two);
-            original_player_order.push_back(three);
-            original_player_order.push_back(four);
-            original_player_order.push_back(one);
+        original_player_order.push_back(two);
+        original_player_order.push_back(three);
+        original_player_order.push_back(four);
+        original_player_order.push_back(one);
 
-            dealer_order.push_back(two);
-            dealer_order.push_back(three);
-            dealer_order.push_back(four);
-            dealer_order.push_back(one);
+        dealer_order.push_back(two);
+        dealer_order.push_back(three);
+        dealer_order.push_back(four);
+        dealer_order.push_back(one);
 
         points_to_win = pts_to_win;
         shuffling = shuffle_in;
@@ -254,6 +254,10 @@ class Game{
             return 3;
         }
         return -1;  
+    }
+
+    void clear_hand(Player* plyr){
+        
     }
 
     void play(){
