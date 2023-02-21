@@ -198,7 +198,6 @@ class HumanPlayer : public Player {
                           int round, Suit &order_up_suit) const{//do we need all these parameters?
     string decision;
     assert(round == 1 || round == 2);
-    if(round == 1 && !((round == 2) && is_dealer)){//account for screwing the dealaer
     print_hand();
     cout << "Human player " << player_name << ", please enter a suit, or \"pass\":\n";
     cin >> decision;
@@ -207,13 +206,7 @@ class HumanPlayer : public Player {
       return true;
     }
     return false;
-    }
-    else{
-      cout << "Human player " << player_name << ", please enter a suit, you cannot pass\n";
-      cin >> decision;
-      order_up_suit = string_to_suit(decision);
-      return true;
-    }
+    
   }
 
   //REQUIRES Player has at least one card
