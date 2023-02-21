@@ -57,7 +57,8 @@ class SimplePlayer : public Player {
     } else if (round == 2){
       int counter2 = 0;
       for (int j = 0; j < hand.size(); j++){
-        if ((hand[j].is_face_or_ace() && hand[j].is_trump(Suit_next(upcard.get_suit()))) || 
+        if ((hand[j].is_face_or_ace() && 
+            hand[j].is_trump(Suit_next(upcard.get_suit()))) || 
             hand[j].is_left_bower(Suit_next(upcard.get_suit())) || 
             hand[j].is_right_bower(Suit_next(upcard.get_suit()))){
           counter2 ++;
@@ -195,7 +196,7 @@ class HumanPlayer : public Player {
   //  change order_up_suit to desired suit.  If Player wishes to pass, then do
   //  not modify order_up_suit and return false.
   bool make_trump(const Card &upcard, bool is_dealer,
-                          int round, Suit &order_up_suit) const{//do we need all these parameters?
+                          int round, Suit &order_up_suit) const{
     string decision;
     assert(round == 1 || round == 2);
     print_hand();
@@ -210,7 +211,8 @@ class HumanPlayer : public Player {
   }
 
   //REQUIRES Player has at least one card
-  //EFFECTS  Player adds one card to hand and removes one card from hand.
+  //EFFECTS  Player adds one card to hand 
+  //and removes one card from hand.
   void add_and_discard(const Card &upcard) {
     assert(hand.size() >= 1);
     int discard;
@@ -219,8 +221,7 @@ class HumanPlayer : public Player {
     cout << "Human player " << player_name << ", please select a card to discard:\n";
     cin >> discard;
     if(discard != -1){//if player wants to discard non-upcard
-      hand.erase(hand.begin()+discard);//discard
-      add_card(upcard);//add upcard
+      hand[discard] = upcard;//discard
     }
   }
   Card lead_card(Suit trump){
