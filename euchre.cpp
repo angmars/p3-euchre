@@ -328,9 +328,10 @@ bool is_simple_or_human(string input){
 
 int main(int argc, char *argv[]){
     //get vector of players, make dealer last index
-    cout << argv[0] << " " << argv[1] << " " << argv[2] << " " << argv[3] << " " 
-        << argv[4] << " " << argv[5] << " " << argv[6] << " " << argv[7] << " " 
-        << argv[8] << " " << argv[9] << " " << argv[10] << " " << argv[11] << endl;
+    for (int i = 0; i < argc; i++){
+        cout << argv[i] << " ";
+    }
+    cout << endl;
     
     string Player1Name = argv[4];
     string Player1Type = argv[5];
