@@ -25,40 +25,26 @@ class Game{
     int points_team1;
     int points_team2;
     int order_up_team;
-    public:
     
-    // Game(std::vector<Player*> players_in, int pts_to_win, bool shuffle_in, std::istream& pack_name);
+    public:
 
-    // void shuffle();
-    // void deal();
-    // void make_trump();
-    // Card play_card(int index, bool is_leader, Card lead_card);
-    // std::vector<int> play_hand();
-    // Player* get_player(int index);
-    // void player_rotate();
-    // void play();
-    // int get_winner(Card card1, Card card2, Card card3, Card card4);
-    // Suit get_trump();
-    // bool is_team_1(Player* plyr);
-
-    Game(string Player1Name, string Player1Type, string Player2Name, string Player2Type, 
-            string Player3Name, string Player3Type, string Player4Name, string Player4Type, 
+    Game(Player* one, Player* two, Player* three, Player* four, 
                 int pts_to_win, bool shuffle_in, istream& pack_name){
 
-            players.push_back(Player_factory(Player2Name, Player2Type));
-            players.push_back(Player_factory(Player3Name, Player3Type));
-            players.push_back(Player_factory(Player4Name, Player4Type));
-            players.push_back(Player_factory(Player1Name, Player1Type));
+            players.push_back(two);
+            players.push_back(three);
+            players.push_back(four);
+            players.push_back(one);
 
-            original_player_order.push_back(Player_factory(Player2Name, Player2Type));
-            original_player_order.push_back(Player_factory(Player3Name, Player3Type));
-            original_player_order.push_back(Player_factory(Player4Name, Player4Type));
-            original_player_order.push_back(Player_factory(Player1Name, Player1Type));
+            original_player_order.push_back(two);
+            original_player_order.push_back(three);
+            original_player_order.push_back(four);
+            original_player_order.push_back(one);
 
-            dealer_order.push_back(Player_factory(Player2Name, Player2Type));
-            dealer_order.push_back(Player_factory(Player3Name, Player3Type));
-            dealer_order.push_back(Player_factory(Player4Name, Player4Type));
-            dealer_order.push_back(Player_factory(Player1Name, Player1Type));
+            dealer_order.push_back(two);
+            dealer_order.push_back(three);
+            dealer_order.push_back(four);
+            dealer_order.push_back(one);
 
         points_to_win = pts_to_win;
         shuffling = shuffle_in;
@@ -75,57 +61,48 @@ class Game{
         if(shuffling){//shuffle at the start of each deal
             shuffle();
         }
-        int playercounter = 0;//start at one to get player 
+        //start at one to get player 
         for(int i = 0; i < 3; ++i){//first 3 cards player left of dealer
             Card card1 = pack.deal_one();
-            players[playercounter]->add_card(card1);
-            dealer_order[playercounter]->add_card(card1);
-        }
-        ++playercounter;
-        for(int i = 0; i < 2; ++i){//next 2 cards player 2
-            Card card2 = pack.deal_one();
-            players[playercounter]->add_card(card2);
-            dealer_order[playercounter]->add_card(card2);
-        }
-        ++playercounter;
-        for(int i = 0; i < 3; ++i){//next 3 cards player 3
-            Card card3 = pack.deal_one();
-            players[playercounter]->add_card(card3);
-            dealer_order[playercounter]->add_card(card3);
-        }
-        ++playercounter; 
-        for(int i = 0; i < 2; ++i){//next 2 cards
-            Card card4 = pack.deal_one();
-            players[playercounter]->add_card(card4);
-            dealer_order[playercounter]->add_card(card4);
-        }
-        //next round of dealing
-        playercounter = 0;
-        for(int i = 0; i < 2; ++i){
-            Card card5 = pack.deal_one();
-            players[playercounter]->add_card(card5);
-            dealer_order[playercounter]->add_card(card5);
-        }
-        ++playercounter;
-        for(int i = 0; i < 3; ++i){
-            Card card6 = pack.deal_one();
-            players[playercounter]->add_card(card6);
-            dealer_order[playercounter]->add_card(card6);
-        }
-        ++playercounter;
-        for(int i = 0; i < 2; ++i){
-            Card card7 = pack.deal_one();
-            players[playercounter]->add_card(card7);
-            dealer_order[playercounter]->add_card(card7);
+            players[0]->add_card(card1);
         }
 
-        ++playercounter;
+        for(int i = 0; i < 2; ++i){//next 2 cards player 2
+            Card card2 = pack.deal_one();
+            players[1]->add_card(card2);
+        }
+
+        for(int i = 0; i < 3; ++i){//next 3 cards player 3
+            Card card3 = pack.deal_one();
+            players[2]->add_card(card3);
+        }
+
+        for(int i = 0; i < 2; ++i){//next 2 cards
+            Card card4 = pack.deal_one();
+            players[3]->add_card(card4);
+        }
+        //next round of dealing
+        for(int i = 0; i < 2; ++i){
+            Card card5 = pack.deal_one();
+            players[0]->add_card(card5);
+        }
+
+        for(int i = 0; i < 3; ++i){
+            Card card6 = pack.deal_one();
+            players[1]->add_card(card6);
+        }
+
+        for(int i = 0; i < 2; ++i){
+            Card card7 = pack.deal_one();
+            players[2]->add_card(card7);
+        }
+
         for(int i = 0; i < 3; ++i){
             Card card8 = pack.deal_one();
-            players[playercounter]->add_card(card8);
-            dealer_order[playercounter]->add_card(card8);
+            players[3]->add_card(card8);
         }
         upcard = pack.deal_one();
+        pack.reset();
     }
     void make_trump(){
         bool end_round = false;
@@ -135,12 +112,15 @@ class Game{
                 if (i == 3){
                     isdealer = true;
                 }
-                if ((dealer_order[i])->make_trump(upcard, isdealer, round, trump)){
-                    dealer_order[i]->add_and_discard(upcard);
+                if ((players[i])->make_trump(upcard, isdealer, round, trump)){
+                    if (round == 1) {
+                        players[3]->add_and_discard(upcard);
+                    }
                     cout << players[i]->get_name() << " orders up " << trump << endl;
+                    cout << endl;
                     if (i == 1 || i == 3){
                         order_up_team = 1;   
-                    } else if (i == 2 || i == 4){
+                    } else if (i == 0 || i == 2){
                         order_up_team = 2;
                     }
                     end_round = true;
@@ -155,7 +135,7 @@ class Game{
         }
     }
 
-    Card play_card(int index, bool is_leader, Card lead_card){
+    Card play_one_card(int index, bool is_leader, Card lead_card){
         if (is_leader){
             return players[index]->lead_card(trump);
         }
@@ -163,74 +143,86 @@ class Game{
     }
 
     vector<int> play_hand(){
-        vector<Player*> temp_players;
         vector<int> output;
         int trickcount_team1 = 0;
         int trickcount_team2 = 0;
-        for (int i = 0; i < 4; i++){
-            // temp_players[i] = players[i];
-            temp_players.push_back(players[i]);
-        }
-        int winner_index;
+
         for (int j = 0; j < 5; j++){
+            int winner_index = 0;
+            int winner_index_return = 0;
             Card rand = Card();//random card for play_card function for leader
             //leader plays card
             int counter = 0;
-                Card card_1 = play_card(counter, true, rand);
+                Card card_1 = play_one_card(counter, true, rand);
                 cout << card_1 << " led by " << players[0]->get_name() << endl;
             counter++;
             //others play cards
-                Card card_2 = play_card(counter, false, card_1);
+                Card card_2 = play_one_card(counter, false, card_1);
                 cout << card_2 << " played by " << players[1]->get_name() << endl;
             counter++;
-                Card card_3 = play_card(counter, false, card_1);
+                Card card_3 = play_one_card(counter, false, card_1);
                 cout << card_3 << " played by " << players[2]->get_name() << endl;
             counter++;
-                Card card_4 = play_card(counter, false, card_1);
+                Card card_4 = play_one_card(counter, false, card_1);
                 cout << card_4 << " played by " << players[3]->get_name() << endl;
             //print winner
             winner_index = get_winner(card_1, card_2, card_3, card_4);
-            cout << players[winner_index]->get_name() << " takes the trick\n";
-            if(is_team_1(players[winner_index])){//if winner is team 1
+            cout << players[winner_index]->get_name() << " takes the trick" << endl;
+            cout << endl;
+            
+            for (int i = 0; i < original_player_order.size(); i++){
+                if (original_player_order[i]->get_name() == players[winner_index]->get_name()){
+                    winner_index_return = i;
+                }
+            }
+            if(is_team_1(winner_index_return)){//if winner is team 1
                 trickcount_team1++;
             }
             else{
                 trickcount_team2++;
             }
             //set winner as first index
-            
-            for(int i = winner_index; i<players.size(); ++i){//winner index onwards
-                temp_players[i-winner_index] = players[i];
-            }
-            for(int i = 0; i < winner_index; ++i){//zero to winner index
-                temp_players[winner_index+i] = players[i];
-            }
-            for(int i = 0; i < players.size(); ++i){//copy temp_players into players
-                players[i] = temp_players[i];
-            }
+            change_lead(winner_index);
         }
+
         if(trickcount_team1>trickcount_team2){//if team 1 won more tricks
             output.push_back(1);
-            output.push_back(trickcount_team1-trickcount_team2);
+            output.push_back(trickcount_team1);
         }
         else{//if team 2 won more tricks
             output.push_back(2);
-            output.push_back(trickcount_team2-trickcount_team1);
+            output.push_back(trickcount_team2);
         }
         return output;
     }
-    bool is_team_1(Player* plyr){
-        if(plyr == original_player_order[0] || plyr == original_player_order[3]){//opposite from original dealer and original dealer
+
+    void change_lead(int winner_index){
+        vector<Player*> temp_players;
+        
+        for(int i = winner_index; i < players.size(); ++i){//winner index onwards
+            temp_players.push_back(players[i]);
+        }
+        for(int j = 0; j < winner_index; ++j){//zero to winner index
+            temp_players.push_back(players[j]);
+        }
+
+        for(int k = 0; k < temp_players.size(); ++k){//copy temp_players into players
+            players[k] = temp_players[k];
+        }
+        for(int l = 0; l < temp_players.size(); l++){
+            temp_players.erase(temp_players.begin()+l);
+        }
+    }
+
+
+    bool is_team_1(int index){
+        if(index == 1 || index == 3){//opposite from original dealer and original dealer
             return true;
         }
         return false;
     }
 
-    Player* get_player(int index){
-        return original_player_order[index];
-    }
-
-    void player_rotate(){
+    void players_rotate(){
         vector<Player*> temp_players;
         for(int i = 1; i < dealer_order.size(); ++i){
             temp_players.push_back(dealer_order[i]);//every other player except new dealer
@@ -241,19 +233,25 @@ class Game{
         }
     }
 
+    void players_reset(){
+        for(int i = 0; i < players.size(); ++i){
+            players[i] = dealer_order[i];
+        }
+    }
+    
     int get_winner(Card card1, Card card2, Card card3, Card card4){
-        if (!Card_less(card1, card2, card1, trump) && !Card_less(card1, card3, card1, trump) 
-                            && !Card_less(card1, card4, card1, trump)){
+        if (Card_less(card2, card1, card1, trump) && Card_less(card3, card1, card1, trump) 
+                            && Card_less(card4, card1, card1, trump)){
+            return 0;
+        } else if (Card_less(card1, card2, card1, trump) && Card_less(card3, card2, card1, trump) 
+                            && Card_less(card4, card2, card1, trump)){
             return 1;
-        } else if (!Card_less(card2, card1, card1, trump) && !Card_less(card2, card3, card1, trump) 
-                            && !Card_less(card2, card4, card1, trump)){
+        } else if (Card_less(card1, card3, card1, trump) && Card_less(card2, card3, card1, trump) 
+                            && Card_less(card4, card3, card1, trump)){
             return 2;
-        } else if (!Card_less(card3, card2, card1, trump) && !Card_less(card3, card1, card1, trump) 
-                            && !Card_less(card3, card4, card1, trump)){
+        } else if (Card_less(card1, card4, card1, trump) && Card_less(card2, card4, card1, trump) 
+                            && Card_less(card3, card4, card1, trump)){
             return 3;
-        } else if (!Card_less(card4, card2, card1, trump) && !Card_less(card4, card3, card1, trump) 
-                            && !Card_less(card4, card1, card1, trump)){
-            return 4;
         }
         return -1;  
     }
@@ -271,19 +269,23 @@ class Game{
         int hand_count = 0;
         while (points_team1 < points_to_win && points_team2 < points_to_win){
             bool plus_two = false;
+            bool march = false;
+            bool euchred = false;
             cout << "Hand " << hand_count << endl;
             cout << dealer_order[3]->get_name() << " deals" << endl;
             deal();
             cout << upcard << " turned up" << endl;
             make_trump();
             vector<int> result = play_hand();
-            player_rotate();
+            players_rotate();
+            players_reset();
+
             if (result[0] == order_up_team && result[1] == 5){
-                cout << "march!" << endl;
                 plus_two = true;
+                march = true;
             } else if (result[0] != order_up_team && result[1] >= 3){
-                cout << "euchred!" << endl;
                 plus_two = true;
+                euchred = true;
             }
             if (result[0] == 1) {
                 cout << (team_1.first)->get_name() << " and " << (team_1.second)->get_name() << " win the hand" << endl;
@@ -298,20 +300,20 @@ class Game{
                 }
                 points_team2 ++;
             }
+            if (march){
+                cout << "march!" << endl;
+            } else if (euchred){
+                cout << "euchred!" << endl;
+            }
+            cout << (team_1.first)->get_name() << " and " << (team_1.second)->get_name() << " have " << points_team1 << " points" << endl;
+            cout << (team_2.first)->get_name() << " and " << (team_2.second)->get_name() << " have " << points_team2 << " points" << endl;
+            cout << endl;
+            hand_count ++;
         }
         if(points_team1 >= points_to_win){
             cout << (team_1.first)->get_name() << " and " << (team_1.second)->get_name() << " win!" << endl;
         } else if(points_team2 >= points_to_win){
-            cout << (team_2.first)->get_name() << " and " << (team_2.second)->get_name() << " win1" << endl;
-        }
-        for (size_t i = 0; i < players.size(); ++i) {//delete all players
-            delete players[i];
-        }
-        for (size_t i = 0; i < dealer_order.size(); ++i) {
-            delete dealer_order[i];
-        }
-        for (size_t i = 0; i < original_player_order.size(); ++i) {
-            delete original_player_order[i];
+            cout << (team_2.first)->get_name() << " and " << (team_2.second)->get_name() << " win!" << endl;
         }
     }
 
@@ -326,6 +328,9 @@ bool is_simple_or_human(string input){
 
 int main(int argc, char *argv[]){
     //get vector of players, make dealer last index
+    cout << argv[0] << " " << argv[1] << " " << argv[2] << " " << argv[3] << " " 
+        << argv[4] << " " << argv[5] << " " << argv[6] << " " << argv[7] << " " 
+        << argv[8] << " " << argv[9] << " " << argv[10] << " " << argv[11] << endl;
     
     string Player1Name = argv[4];
     string Player1Type = argv[5];
@@ -339,8 +344,6 @@ int main(int argc, char *argv[]){
     string Player4Name = argv[10];
     string Player4Type = argv[11];
 
-
-    // vector<Player*> temp_players;
     string shuffle = string(argv[2]);
     bool temp_shuffle = (shuffle == "shuffle");
     int points_to_win = atoi(argv[3]);
@@ -357,20 +360,19 @@ int main(int argc, char *argv[]){
         cout << "Error opening " << filename << endl;
         return -1;
     }
-    // for(int i = 6; i < argc; i+=2){//read in all players, skipping dealer
-    //     temp_players.push_back(Player_factory(string(argv[i]), string(argv[i+1])));
-    // }
-    // temp_players.push_back(Player_factory(string(argv[4]), string(argv[5])));//add the dealer to the end
-    
-    Game euchre = Game(Player1Name, Player1Type, Player2Name, Player2Type, 
-                        Player3Name, Player3Type, Player4Name, Player4Type, 
-                        points_to_win, temp_shuffle, fin);
-    // for (size_t i = 0; i < temp_players.size(); ++i) {
-    //     delete temp_players[i];
-    // }
-    
-    //add playing stuff here
+
+    Player* one = Player_factory(Player1Name, Player1Type); 
+    Player* two = Player_factory(Player2Name, Player2Type); 
+    Player* three = Player_factory(Player3Name, Player3Type); 
+    Player* four = Player_factory(Player4Name, Player4Type); 
+
+    Game euchre = Game(one, two, three, four, points_to_win, temp_shuffle, fin);
     
     euchre.play();
+
+    delete one;
+    delete two;
+    delete three;
+    delete four;
     
 }

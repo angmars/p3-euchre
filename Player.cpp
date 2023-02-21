@@ -94,6 +94,7 @@ class SimplePlayer : public Player {
   //  "Lead" means to play the first Card in a trick.  The card
   //  is removed the player's hand.
   Card lead_card(Suit trump) {
+
     assert(hand.size() >= 1);
 
     Card highbasic = Card(TWO, Suit_next(trump));
@@ -128,6 +129,7 @@ class SimplePlayer : public Player {
   //EFFECTS  Plays one Card from Player's hand according to their strategy.
   //  The card is removed from the player's hand.
   Card play_card(const Card &led_card, Suit trump) {
+
     assert(hand.size() >= 1);
 
     Card highled = Card(TWO, led_card.get_suit());
